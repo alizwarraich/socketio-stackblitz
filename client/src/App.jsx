@@ -22,6 +22,7 @@ function App() {
 
     useEffect(() => {
         setReceiver(users[0]?.id);
+        console.log(users);
     }, [users]);
 
     const handleSubmit = (e) => {
@@ -70,6 +71,7 @@ function App() {
                             type="radio"
                             name="receiver"
                             value={user.id}
+                            defaultChecked={index === 0}
                             onChange={(e) => setReceiver(e.target.value)}
                         />
                         <label>{user.name}</label>

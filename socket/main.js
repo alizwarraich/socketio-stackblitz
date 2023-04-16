@@ -18,11 +18,24 @@ const io = new Server(port, {
 let users = [];
 
 // on connection establish
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
+    // get all connected sockets
+    const sockets = await io.fetchSockets();
+
     // on user join
     socket.on("custom", (user) => {
         // if users array does not contain a user having same name, push the user object into users array
         users = [...users.filter((prev) => prev.name !== user.name), user];
+
+        // disconnect the socket if user is already connected
+        for (const socket of sockets) {
+            let userIds = users.map((user) => user.id);
+            if (!userIds.includes(socket.id)) {
+                console.log("Disconnected: ", socket.id);
+                socket.disconnect();
+            }
+        }
+
         console.log(users);
         console.log("Total clients connected: ", users.length);
         io.emit("users", users);
