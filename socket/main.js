@@ -1,11 +1,16 @@
 const express = require("express");
 const { Server } = require("socket.io");
+const { instrument } = require("@socket.io/admin-ui");
+
 const app = express();
 
 const port = 8080;
+
+// create a new server instance
 const io = new Server(port, {
     cors: {
-        origin: ["http://localhost:5173"],
+        origin: ["http://localhost:5173", "https://admin.socket.io"],
+        credentials: true,
     },
 });
 
@@ -25,7 +30,8 @@ io.on("connection", (socket) => {
 
     // on message received
     socket.on("msg", (obj) => {
-        socket.to(obj.id).emit("received", obj.msg);
+        console.log(obj);
+        socket.to(obj.receiver).emit("received", obj.msg);
     });
 
     // on user disconnect
@@ -33,6 +39,11 @@ io.on("connection", (socket) => {
         users = users.filter((user) => user.id !== socket.id);
         console.log("Total clients connected: ", users.length);
     });
+});
+
+instrument(io, {
+    auth: false,
+    mode: "development",
 });
 
 app.listen(8000, () => {

@@ -20,6 +20,10 @@ function App() {
         setUsers(users.filter((item) => item.name !== user.name));
     });
 
+    useEffect(() => {
+        setReceiver(users[0]?.id);
+    }, [users]);
+
     const handleSubmit = (e) => {
         e.preventDefault();
         setMessages([...messages, msg]);
@@ -52,18 +56,25 @@ function App() {
                     style={{ width: "40%" }}
                 />
 
-                {/* create a dropdown checkbox containing values from the users state */}
-                <select name="users" id="users" style={{ width: "25%" }}>
-                    {users.map((user) => (
-                        <option
-                            key={user?.id}
-                            value={user?.id}
-                            onChange={() => setReceiver(user?.id)}
-                        >
-                            {user.name}
-                        </option>
-                    ))}
-                </select>
+                {/* create a radio button containing values from the users state */}
+                {users.map((user, index) => (
+                    <div
+                        key={index}
+                        style={{
+                            width: "10%",
+                            display: "flex",
+                            flexDirection: "row-reverse",
+                        }}
+                    >
+                        <input
+                            type="radio"
+                            name="receiver"
+                            value={user.id}
+                            onChange={(e) => setReceiver(e.target.value)}
+                        />
+                        <label>{user.name}</label>
+                    </div>
+                ))}
 
                 <br />
 
