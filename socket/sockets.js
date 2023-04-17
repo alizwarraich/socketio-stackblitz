@@ -8,6 +8,7 @@ const listen = (io) => {
     io.on("connection", async (socket) => {
         // get all connected sockets
         const sockets = await io.fetchSockets();
+        console.log("Connected: ", socket.id);
 
         // on user join
         socket.on("custom", (user) => {
@@ -15,8 +16,8 @@ const listen = (io) => {
             users = [...users.filter((prev) => prev.name !== user.name), user];
 
             // disconnect the socket if user is already connected
+            let userIds = users.map((user) => user.id);
             for (const socket of sockets) {
-                let userIds = users.map((user) => user.id);
                 if (!userIds.includes(socket.id)) {
                     console.log("Disconnected: ", socket.id);
                     socket.disconnect();
